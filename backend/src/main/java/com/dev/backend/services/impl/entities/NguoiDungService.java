@@ -241,7 +241,7 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
                 OtpScheduleObj.builder()
                         .email(nguoiDung.getEmail())
                         .otp(otp)
-                        .createdAt(nguoiDung.getNgayTao())
+                        .createdAt(Instant.now())
                         .type(OtpType.RESET_PASSWORD)
                         .build()
         );
@@ -273,11 +273,16 @@ public class NguoiDungService extends BaseServiceImpl<NguoiDung, Integer> {
         );
         OtpScheduleObj findingResetOtp = GlobalCache.OTP_SCHEDULE_OBJS.stream().filter(otpScheduleObj ->
                 otpScheduleObj.getEmail().equals(nguoiDung.getEmail()) && otpScheduleObj.getType().equals(OtpType.RESET_PASSWORD)).findFirst().orElseThrow(
-                () -> new CommonException("Mã xác nhận không tồn tại hoặc đã hết hạn")
+                () -> new CommonException("Mã xác nhận không tồn tại hoặc đã hết hạn 1")
         );
 
         if (!findingResetOtp.getOtp().equals(rpRequest.getOtp())) {
-            throw new CommonException("Mã xác nhận không tồn tại hoặc đã hết hạn");
+            throw new CommonException("Mã xác nhận không tồn tại hoặc đã hết hạn 2");
+        }
+
+        Instant now = Instant.now();
+        if (now.isAfter(findingResetOtp.getCreatedAt().plusSeconds(300))) {
+            throw new CommonException("Mã xác nhận không tồn tại hoặc đã hết hạn 3");
         }
 
         nguoiDung.setMatKhauHash(passwordEncoder.encode(rpRequest.getPassword()));
