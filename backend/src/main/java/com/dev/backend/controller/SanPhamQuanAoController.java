@@ -72,14 +72,15 @@ public class SanPhamQuanAoController {
 
     @PostMapping("/filter")
     @RequireAuth(
-            roles = {IRoleType.quan_tri_vien,
+            roles = {
+                    IRoleType.quan_tri_vien,
                     IRoleType.quan_ly_kho,
                     IRoleType.nhan_vien_kho,
                     IRoleType.nhan_vien_ban_hang,
                     IRoleType.nhan_vien_mua_hang
             }
     )
-    public ResponseEntity<ResponseData<Page<SanPhamQuanAoDto>>> filter(BaseFilterRequest filter) {
+    public ResponseEntity<ResponseData<Page<SanPhamQuanAoDto>>> filter(@RequestBody BaseFilterRequest filter) {
         return ResponseEntity.ok(
                 ResponseData.<Page<SanPhamQuanAoDto>>builder()
                         .status(HttpStatus.OK.value())
