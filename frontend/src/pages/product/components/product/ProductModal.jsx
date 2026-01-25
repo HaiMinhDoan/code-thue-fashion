@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -21,7 +21,6 @@ import { productSchema } from "@/validations/productSchema";
 
 export default function ProductModal({ isOpen, onClose, onSuccess, productId = null }) {
     const isEditMode = !!productId;
-    const prevProductIdRef = useRef(productId);
 
     const [colors, setColors] = useState([]);
     const [sizes, setSizes] = useState([]);
@@ -120,8 +119,8 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
         }
     }, [reset, onClose]);
 
-    const resetFormToDefaults = useCallback(() => {
-        const defaultValues = {
+    const handleResetForm = useCallback(() => {
+        reset({
             tenSanPham: "",
             maSanPham: "",
             maVach: "",
@@ -141,10 +140,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                 giaBan: 0,
                 trangThai: 1,
             }],
-        };
-
-        reset(defaultValues);
-
+        });
         setProductImages([]);
         setVariantImages([]);
         setExistingProductImages([]);
@@ -158,23 +154,10 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
     }, [isOpen, isEditMode, productId, fetchProductDetails]);
 
     useEffect(() => {
-        if (!isOpen) {
-            prevProductIdRef.current = null;
-            return;
+        if (isOpen && !isEditMode) {
+            handleResetForm();
         }
-
-        const prevProductId = prevProductIdRef.current;
-        const currentProductId = productId;
-
-        if (prevProductId !== null && currentProductId === null) {
-            resetFormToDefaults();
-        }
-        else if (currentProductId === null && prevProductId === null) {
-            resetFormToDefaults();
-        }
-
-        prevProductIdRef.current = currentProductId;
-    }, [isOpen, productId, resetFormToDefaults]);
+    }, [isOpen, isEditMode, handleResetForm]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -254,6 +237,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
             const jsonBlob = new Blob([JSON.stringify(productData)], { type: 'application/json' });
             formData.append(dataKey, jsonBlob);
 
+            // Append image files
             productImages.forEach((file) => {
                 formData.append('anhSanPhams', file);
             });
@@ -274,6 +258,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                 return;
             }
 
+            // Success
             toast.success(isEditMode ? "Cập nhật sản phẩm thành công!" : "Tạo sản phẩm thành công!");
             handleResetForm();
             onSuccess();
@@ -288,13 +273,8 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
         }
     };
 
-    const handleResetForm = () => {
-        console.log('Resetting form');
-        resetFormToDefaults();
-    };
 
     const handleCancel = () => {
-        console.log('handleCancelhandleCancel');
         if (!isSubmitting) {
             handleResetForm();
             onClose();
@@ -356,7 +336,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                 </DialogHeader>
 
                 <div className="max-h-[calc(90vh-12rem)] overflow-y-auto overflow-x-visible px-1">
-                    <form key={productId || 'create'} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <div className="space-y-4">
                             <h3 className="font-semibold text-sm text-gray-700 border-b pb-2">Thông tin cơ bản</h3>
 
@@ -401,6 +381,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                                     />
                                 </div>
 
+                                {/* Hidden field for danhMucId - always set to 1 */}
                                 <Controller
                                     name="danhMucId"
                                     control={control}
@@ -432,6 +413,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                                     />
                                 </div>
 
+                                {/* Giá mặc định */}
                                 <div className="space-y-2">
                                     <Label htmlFor="giaVonMacDinh">Giá vốn mặc định</Label>
                                     <Controller
@@ -471,6 +453,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                                     )}
                                 </div>
 
+                                {/* Mức tồn tối thiểu */}
                                 <div className="col-span-2 space-y-2">
                                     <Label htmlFor="mucTonToiThieu">Mức tồn tối thiểu</Label>
                                     <Controller
@@ -793,7 +776,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                                                 {existingProductImages.map((img, index) => (
                                                     <div key={`existing-${index}`} className="relative">
                                                         <img
-                                                            src={img.tepTin.duongDan}
+                                                            src={img.urlAnh}
                                                             alt="Product"
                                                             className="w-full h-20 object-cover rounded"
                                                         />
@@ -859,7 +842,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                                                 {existingVariantImages.map((img, index) => (
                                                     <div key={`existing-${index}`} className="relative">
                                                         <img
-                                                            src={img.tepTin.duongDan}
+                                                            src={img.urlAnh}
                                                             alt="Variant"
                                                             className="w-full h-20 object-cover rounded"
                                                         />
