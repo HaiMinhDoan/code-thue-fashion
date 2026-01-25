@@ -215,7 +215,7 @@ public class SanPhamQuanAoService extends BaseServiceImpl<SanPhamQuanAo, Integer
         try {
             objectMapper.registerModule(new JavaTimeModule());
             objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            giaTriMoiJson = objectMapper.writeValueAsString(sanPhamQuanAo);
+            giaTriMoiJson = objectMapper.writeValueAsString(creating);
         } catch (JsonProcessingException e) {
             log.error("Lỗi json", e);
             giaTriMoiJson = "error when parse";
