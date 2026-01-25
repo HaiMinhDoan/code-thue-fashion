@@ -88,4 +88,26 @@ public class SanPhamQuanAoController {
                         .build()
         );
     }
+
+
+    @DeleteMapping("/soft-delete/{id}")
+    @RequireAuth(
+            roles = {
+                    IRoleType.quan_tri_vien,
+                    IRoleType.quan_ly_kho,
+                    IRoleType.nhan_vien_kho,
+                    IRoleType.nhan_vien_ban_hang,
+                    IRoleType.nhan_vien_mua_hang
+            }
+    )
+    public ResponseEntity<ResponseData<String>> softDelete(@PathVariable Integer id) {
+        sanPhamQuanAoService.changeStatus(id, 0);
+        return ResponseEntity.ok(
+                ResponseData.<String>builder()
+                        .status(HttpStatus.OK.value())
+                        .data("Success")
+                        .message("Success")
+                        .build()
+        );
+    }
 }
