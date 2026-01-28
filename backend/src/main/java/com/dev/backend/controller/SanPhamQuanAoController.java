@@ -4,6 +4,7 @@ import com.dev.backend.constant.variables.IRoleType;
 import com.dev.backend.customizeanotation.RequireAuth;
 import com.dev.backend.dto.request.BaseFilterRequest;
 import com.dev.backend.dto.request.SanPhamQuanAoCreating;
+import com.dev.backend.dto.request.SanPhamQuanAoUpdating;
 import com.dev.backend.dto.response.ResponseData;
 import com.dev.backend.dto.response.entities.SanPhamQuanAoDto;
 import com.dev.backend.exception.customize.CommonException;
@@ -42,6 +43,20 @@ public class SanPhamQuanAoController {
             @RequestPart(value = "anhBienThes", required = false) List<MultipartFile> anhBienThes) {
         return sanPhamQuanAoService.create(creating, anhSanPhams, anhBienThes);
 
+    }
+
+    @PutMapping(
+            value = "/update",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    @RequireAuth(
+            roles = {IRoleType.quan_tri_vien, IRoleType.quan_ly_kho}
+    )
+    public ResponseEntity<ResponseData<SanPhamQuanAoDto>> update(
+            @RequestBody SanPhamQuanAoUpdating updating,
+            @RequestPart(value = "anhSanPhams", required = false) List<MultipartFile> anhSanPhams,
+            @RequestPart(value = "anhBienThes", required = false) List<MultipartFile> anhBienThes) {
+        return sanPhamQuanAoService.update(updating, anhSanPhams, anhBienThes);
     }
 
     @GetMapping("/get-by-id/{id}")

@@ -21,8 +21,12 @@ export const productService = {
     },
 
 
-    updateProduct: (id, productData) => {
-        return apiClient.put(`/api/v1/products/${id}`, productData);
+    updateProduct: (id, formData) => {
+        return apiClient.put("/api/v1/san-pham-quan-ao/update", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
     },
 
 

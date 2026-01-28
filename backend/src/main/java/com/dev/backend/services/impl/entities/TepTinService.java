@@ -51,4 +51,17 @@ public class TepTinService extends BaseServiceImpl<TepTin, Integer> {
                         .data("Success")
                         .message("Success").build());
     }
+
+    @Transactional
+    public void hardDeleteNoMessage(Integer id) {
+        Optional<TepTin> tepTin = getOne(id);
+
+        if (tepTin.isEmpty()) {
+            throw new CommonException("Không tìm thấy tệp tin id: " + id);
+        }
+
+        minioService.delete(tepTin.get().getTenLuuTru());
+
+        delete(id);
+    }
 }

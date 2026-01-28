@@ -10,6 +10,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader2, Search, Eye, Settings, Trash2, RefreshCcw, Package } from "lucide-react";
 import { useToggle } from "@/hooks/useToggle";
+import AddProductModal from "@/pages/product/components/product/AddProductModal";
+import EditProductModal from "@/pages/product/components/product/EditProductModal";
 import ProductModal from "@/pages/product/components/product/ProductModal";
 import ConfirmModal from "@/components/ui/confirm-modal";
 import PaginationComponent from "./components/product/ProductComponent";
@@ -100,7 +102,9 @@ export default function ProductList() {
     const navigate = useNavigate();
     const searchTimeoutRef = useRef(null);
 
-    const [isModalOpen, openModal, closeModal] = useToggle(false);
+    const [isAddModalOpen, openAddModal, closeAddModal] = useToggle(false);
+    const [isEditModalOpen, openEditModal, closeEditModal] = useToggle(false);
+    const [isViewModalOpen, openViewModal, closeViewModal] = useToggle(false);
     const [isConfirmOpen, openConfirm, closeConfirm] = useToggle(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [selectedProductId, setSelectedProductId] = useState(null);
@@ -225,8 +229,8 @@ export default function ProductList() {
 
     const handleViewClick = useCallback((productId) => {
         setSelectedProductId(productId);
-        openModal();
-    }, [openModal, setSelectedProductId]);
+        openViewModal();
+    }, [openViewModal]);
 
     const handleCancelDelete = useCallback(() => {
         if (!isDeleting) {
@@ -234,7 +238,6 @@ export default function ProductList() {
             closeConfirm();
         }
     }, [isDeleting, closeConfirm]);
-
 
     const updateFilter = useCallback((field, value, resetPage = true) => {
         const actualValue = value?.target ? value.target.value : value;
@@ -258,25 +261,32 @@ export default function ProductList() {
         page: (newPage) => updateFilter('page', newPage, false),
     }), [updateFilter]);
 
-
     const handleModalSuccess = useCallback(() => {
         fetchProducts();
     }, [fetchProducts]);
 
     const handleAddClick = useCallback(() => {
-        setSelectedProductId(null); // null = create mode
-        openModal();
-    }, [openModal]);
+        openAddModal();
+    }, [openAddModal]);
 
     const handleEditClick = useCallback((productId) => {
-        setSelectedProductId(productId); // set id = edit mode
-        openModal();
-    }, [openModal]);
+        setSelectedProductId(productId);
+        openEditModal();
+    }, [openEditModal]);
 
-    const handleModalClose = useCallback(() => {
+    const handleCloseAddModal = useCallback(() => {
+        closeAddModal();
+    }, [closeAddModal]);
+
+    const handleCloseEditModal = useCallback(() => {
         setSelectedProductId(null);
-        closeModal();
-    }, [closeModal]);
+        closeEditModal();
+    }, [closeEditModal]);
+
+    const handleCloseViewModal = useCallback(() => {
+        setSelectedProductId(null);
+        closeViewModal();
+    }, [closeViewModal]);
 
     return (
         <div className="h-screen w-full bg-gray-50 flex flex-col min-h-0">
@@ -305,48 +315,6 @@ export default function ProductList() {
                                     )}
                                 </div>
                             </div>
-                                        {/* filter theo danh muc - pending api */}
-                            {/* <div className="space-y-1.5">
-                                <Label className="text-[13px] text-gray-600 block leading-none">
-                                    Danh mục
-                                </Label>
-
-                                <Select
-                                    value={filters.danhMuc}
-                                    onValueChange={handleFilterChange.danhMuc}
-                                    disabled={isCategoriesLoading || isLoading}
-                                >
-                                    <SelectTrigger className="w-full h-10 px-3 text-sm">
-                                        <SelectValue placeholder={isCategoriesLoading ? "Đang tải..." : "Chọn danh mục"} />
-                                    </SelectTrigger>
-
-                                    <SelectContent
-                                        position="popper"
-                                        side="bottom"
-                                        align="start"
-                                        sideOffset={4}
-                                        className="bg-white z-50"
-                                    >
-                                        {CATEGORY_OPTIONS.map((cat) => {
-                                            const active = filters.danhMuc === cat.value;
-
-                                            return (
-                                                <SelectItem
-                                                    key={cat.value}
-                                                    value={cat.value}
-                                                    className={
-                                                        active
-                                                            ? "bg-purple-600 text-white focus:bg-purple-600 focus:text-white"
-                                                            : "focus:bg-gray-100"
-                                                    }
-                                                >
-                                                    {cat.label}
-                                                </SelectItem>
-                                            );
-                                        })}
-                                    </SelectContent>
-                                </Select>
-                            </div> */}
 
                             <div className="space-y-1.5">
                                 <Label className="text-[13px] text-gray-600 block leading-none">
@@ -367,12 +335,7 @@ export default function ProductList() {
                                         side="bottom"
                                         align="start"
                                         sideOffset={4}
-                                        className="z-50
-                                        bg-white
-                                        border border-gray-200
-                                        shadow-lg
-                                        rounded-md
-                                              "
+                                        className="z-50 bg-white border border-gray-200 shadow-lg rounded-md"
                                     >
                                         {STATUS_OPTIONS.map((s) => {
                                             const active = filters.trangThai === s.value;
@@ -420,7 +383,6 @@ export default function ProductList() {
                                     />
                                 </div>
                             </div>
-
                         </div>
 
                         <div className="flex items-center justify-end">
@@ -479,7 +441,6 @@ export default function ProductList() {
                                         <TableHead className="px-4 py-3">ID</TableHead>
                                         <TableHead className="px-4 py-3">Hình ảnh</TableHead>
                                         <TableHead className="px-4 py-3">Tên sản phẩm</TableHead>
-                                        {/* <TableHead className="px-4 py-3">Danh mục</TableHead> */}
                                         <TableHead className="px-4 py-3">Giá bán</TableHead>
                                         <TableHead className="px-4 py-3">Tồn kho</TableHead>
                                         <TableHead className="px-4 py-3">Trạng thái</TableHead>
@@ -499,9 +460,9 @@ export default function ProductList() {
                                                     <TableCell className="px-4 py-3">
                                                         <div className="w-12 h-12 bg-gray-200 rounded-lg animate-pulse" />
                                                     </TableCell>
-                                                    {/* <TableCell className="px-4 py-3">
+                                                    <TableCell className="px-4 py-3">
                                                         <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
-                                                    </TableCell> */}
+                                                    </TableCell>
                                                     <TableCell className="px-4 py-3">
                                                         <div className="h-4 w-20 bg-gray-200 rounded animate-pulse" />
                                                     </TableCell>
@@ -517,9 +478,6 @@ export default function ProductList() {
                                                     <TableCell className="px-4 py-3">
                                                         <div className="h-4 w-20 bg-gray-200 rounded animate-pulse" />
                                                     </TableCell>
-                                                    <TableCell className="px-4 py-3">
-                                                        <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
-                                                    </TableCell>
                                                 </TableRow>
                                             ))}
                                         </>
@@ -527,7 +485,7 @@ export default function ProductList() {
 
                                     {!isLoading && products.length === 0 && (
                                         <TableRow>
-                                            <TableCell colSpan={9} className="py-16 text-center">
+                                            <TableCell colSpan={8} className="py-16 text-center">
                                                 <div className="flex flex-col items-center gap-3">
                                                     <Package className="h-12 w-12 text-gray-300" />
                                                     <div className="text-gray-500">
@@ -566,12 +524,6 @@ export default function ProductList() {
                                                     {product.tenSanPham}
                                                 </div>
                                             </TableCell>
-
-                                            {/* <TableCell className="px-4 py-3">
-                                                <span className="px-2 py-1 text-xs rounded bg-blue-50 text-blue-700">
-                                                    {product.danhMuc?.tenDanhMuc || "N/A"}
-                                                </span>
-                                            </TableCell> */}
 
                                             <TableCell className="px-4 py-3 font-medium text-purple-700">
                                                 {product.giaBanMacDinh ? formatCurrency(product.giaBanMacDinh) : "N/A"}
@@ -639,9 +591,22 @@ export default function ProductList() {
                 </Card>
             </div>
 
+            <AddProductModal
+                isOpen={isAddModalOpen}
+                onClose={handleCloseAddModal}
+                onSuccess={handleModalSuccess}
+            />
+
+            <EditProductModal
+                isOpen={isEditModalOpen}
+                onClose={handleCloseEditModal}
+                onSuccess={handleModalSuccess}
+                productId={selectedProductId}
+            />
+
             <ProductModal
-                isOpen={isModalOpen}
-                onClose={handleModalClose}
+                isOpen={isViewModalOpen}
+                onClose={handleCloseViewModal}
                 onSuccess={handleModalSuccess}
                 productId={selectedProductId}
             />
