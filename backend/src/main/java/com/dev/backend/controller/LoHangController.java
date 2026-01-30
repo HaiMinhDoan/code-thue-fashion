@@ -1,0 +1,62 @@
+package com.dev.backend.controller;
+
+import com.dev.backend.dto.request.BaseFilterRequest;
+import com.dev.backend.dto.response.ResponseData;
+import com.dev.backend.dto.response.entities.LoHangDto;
+import com.dev.backend.exception.customize.CommonException;
+import com.dev.backend.mapper.LoHangMapper;
+import com.dev.backend.services.impl.entities.LoHangService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/lo-hang")
+public class LoHangController {
+
+    @Autowired
+    private LoHangService loHangService;
+
+    @Autowired
+    private LoHangMapper loHangMapper;
+
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseData<List<LoHangDto>>> getAll() {
+        return ResponseEntity.ok(
+                ResponseData.<List<LoHangDto>>builder()
+                        .status(HttpStatus.OK.value())
+                        .data(loHangMapper.toDtoList(loHangService.getAll()))
+                        .message("Success")
+                        .build()
+        );
+    }
+
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<ResponseData<LoHangDto>> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(
+                ResponseData.<LoHangDto>builder()
+                        .status(HttpStatus.OK.value())
+                        .data(loHangMapper.toDto(loHangService.getOne(id).orElseThrow(
+                                () -> new CommonException("Không tìm thấy lô hàng id: " + id)
+                        )))
+                        .build()
+        );
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<ResponseData<Page<LoHangDto>>> filter(@RequestBody BaseFilterRequest filter) {
+        return ResponseEntity.ok(
+                ResponseData.<Page<LoHangDto>>builder()
+                        .status(HttpStatus.OK.value())
+                        .data(loHangMapper.toDtoPage(loHangService.filter(filter)))
+                        .message("Success")
+                        .build());
+    }
+
+
+}
