@@ -1,5 +1,7 @@
 package com.dev.backend.controller;
 
+import com.dev.backend.constant.variables.IRoleType;
+import com.dev.backend.customizeanotation.RequireAuth;
 import com.dev.backend.dto.request.BaseFilterRequest;
 import com.dev.backend.dto.response.ResponseData;
 import com.dev.backend.dto.response.entities.LoHangDto;
@@ -26,6 +28,7 @@ public class LoHangController {
 
 
     @GetMapping("/all")
+    @RequireAuth(roles = {IRoleType.quan_tri_vien, IRoleType.quan_ly_kho, IRoleType.nhan_vien_kho})
     public ResponseEntity<ResponseData<List<LoHangDto>>> getAll() {
         return ResponseEntity.ok(
                 ResponseData.<List<LoHangDto>>builder()
@@ -37,6 +40,7 @@ public class LoHangController {
     }
 
     @GetMapping("/get-by-id/{id}")
+    @RequireAuth(roles = {IRoleType.quan_tri_vien, IRoleType.quan_ly_kho, IRoleType.nhan_vien_kho})
     public ResponseEntity<ResponseData<LoHangDto>> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(
                 ResponseData.<LoHangDto>builder()
@@ -49,6 +53,7 @@ public class LoHangController {
     }
 
     @PostMapping("/filter")
+    @RequireAuth(roles = {IRoleType.quan_tri_vien, IRoleType.quan_ly_kho, IRoleType.nhan_vien_kho})
     public ResponseEntity<ResponseData<Page<LoHangDto>>> filter(@RequestBody BaseFilterRequest filter) {
         return ResponseEntity.ok(
                 ResponseData.<Page<LoHangDto>>builder()
