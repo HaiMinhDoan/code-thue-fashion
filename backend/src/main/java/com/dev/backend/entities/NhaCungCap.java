@@ -43,12 +43,11 @@ public class NhaCungCap {
     @Column(name = "email", length = 100)
     private String email;
 
-    
+    @Lob
     @Column(name = "dia_chi")
     private String diaChi;
 
     @ColumnDefault("0")
-    @Generated(event = EventType.INSERT)
     @Column(name = "trang_thai")
     private Integer trangThai;
 

@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 /**
  * DTO for {@link com.dev.backend.entities.NguoiDung}
@@ -20,12 +21,20 @@ import java.time.Instant;
 @EqualsAndHashCode(of = {"id"})
 public class NguoiDungDto implements Serializable {
     Integer id;
+    @NotNull
+    @Size(max = 50)
     String tenDangNhap;
+    @NotNull
+    @Size(max = 100)
     String hoTen;
+    @Size(max = 100)
     String email;
+    @Size(max = 20)
     String soDienThoai;
+    @NotNull
     String vaiTro;
     Integer trangThai;
     Instant ngayTao;
     Instant ngayCapNhat;
+    private List<PhanQuyenNguoiDungKhoDto> khoPhuTrach;
 }

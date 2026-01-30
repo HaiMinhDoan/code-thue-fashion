@@ -1,16 +1,12 @@
 package com.dev.backend.dto.request;
 
 import com.dev.backend.entities.SanPhamQuanAo;
-import com.dev.backend.exception.customize.CommonException;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @Getter
@@ -60,6 +56,4 @@ public class SanPhamQuanAoCreating {
 
         return ma;
     }
-
-
 }

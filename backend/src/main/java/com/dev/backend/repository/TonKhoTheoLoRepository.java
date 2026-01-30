@@ -14,7 +14,15 @@ import java.util.List;
 
 @Repository
 public interface TonKhoTheoLoRepository extends JpaRepository<TonKhoTheoLo, Integer>, JpaSpecificationExecutor<TonKhoTheoLo> {
-
+    @Query("""
+        select count(t)
+        from TonKhoTheoLo t
+        join t.loHang l
+        join l.bienTheSanPham bt
+        join bt.sanPham sp
+        where t.soLuongKhaDung <= sp.mucTonToiThieu
+    """)
+    Long countLowStockWarnings();
     /**
      * Lấy danh sách tồn kho chi tiết theo kho
      * Tổng hợp từ tất cả các lô

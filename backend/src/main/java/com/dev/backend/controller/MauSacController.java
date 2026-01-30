@@ -1,17 +1,21 @@
 package com.dev.backend.controller;
 
+import com.dev.backend.dto.request.BaseFilterRequest;
+import com.dev.backend.dto.request.MauSacCreating;
+import com.dev.backend.dto.request.MauSacUpdating;
 import com.dev.backend.dto.response.ResponseData;
 import com.dev.backend.dto.response.entities.MauSacDto;
+import com.dev.backend.entities.MauSac;
+import com.dev.backend.exception.customize.CommonException;
 import com.dev.backend.mapper.MauSacMapper;
 import com.dev.backend.services.impl.entities.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/mau-sac")
@@ -23,14 +27,68 @@ public class MauSacController {
     @Autowired
     private MauSacMapper mauSacMapper;
 
-    @GetMapping("/all")
-    public ResponseEntity<ResponseData<List<MauSacDto>>> getAll() {
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<ResponseData<MauSacDto>> getById(@PathVariable Integer id) {
+        Optional<MauSac> finding = mauSacService.getOne(id);
+        if (finding.isEmpty()) {
+            throw new CommonException("Không tìm thấy màu id: " + id);
+        }
         return ResponseEntity.ok(
-                ResponseData.<List<MauSacDto>>builder()
+                ResponseData.<MauSacDto>builder()
                         .status(HttpStatus.OK.value())
-                        .data(mauSacMapper.toDtoList(mauSacService.getAll()))
-                        .build()
-        );
+                        .data(mauSacMapper.toDto(finding.get()))
+                        .message("Success")
+                        .build());
     }
 
+    @PostMapping("/filter")
+    public ResponseEntity<ResponseData<Page<MauSacDto>>> filter(@RequestBody BaseFilterRequest filter) {
+        return ResponseEntity.ok(
+                ResponseData.<Page<MauSacDto>>builder()
+                        .status(HttpStatus.OK.value())
+                        .data(mauSacMapper.toDtoPage(mauSacService.filter(filter)))
+                        .message("Success")
+                        .build());
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ResponseData<MauSacDto>> create(@RequestBody MauSacCreating creating) {
+        // Chuyển DTO sang Entity trước khi gọi service
+        MauSac entity = mauSacMapper.toEntity(creating);
+        MauSac saved = mauSacService.create(entity);
+        return ResponseEntity.ok(
+                ResponseData.<MauSacDto>builder()
+                        .status(HttpStatus.OK.value())
+                        .data(mauSacMapper.toDto(saved))
+                        .message("Success")
+                        .build());
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<ResponseData<MauSacDto>> update(@RequestBody MauSacUpdating updating) {
+        // Chuyển DTO sang Entity và gọi service với (ID, Entity)
+        MauSac entity = mauSacMapper.toEntity(updating);
+        MauSac updated = mauSacService.update(updating.getId(), entity);
+        return ResponseEntity.ok(
+                ResponseData.<MauSacDto>builder()
+                        .status(HttpStatus.OK.value())
+                        .data(mauSacMapper.toDto(updated))
+                        .message("Success")
+                        .build());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseData<String>> delete(@PathVariable Integer id) {
+        Optional<MauSac> finding = mauSacService.getOne(id);
+        if (finding.isEmpty()) {
+            throw new CommonException("Không tìm thấy màu id: " + id);
+        }
+        mauSacService.delete(id);
+        return ResponseEntity.ok(
+                ResponseData.<String>builder()
+                        .status(HttpStatus.OK.value())
+                        .data("Success")
+                        .message("Success")
+                        .build());
+    }
 }

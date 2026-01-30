@@ -91,13 +91,11 @@ public class KhoController {
         kho.setTrangThai(0);
         khoService.update(kho.getId(), kho);
         return ResponseEntity.ok(
-          ResponseData.<String>builder()
-                  .status(HttpStatus.OK.value())
-                  .data("Success")
-                  .message("Success")
-                  .build()
+                ResponseData.<String>builder()
+                        .status(HttpStatus.OK.value())
+                        .data("Success")
+                        .message("Success")
+                        .build()
         );
     }
-
-
 }
