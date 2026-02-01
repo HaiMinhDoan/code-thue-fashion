@@ -190,7 +190,7 @@ public class DonMuaHangService extends BaseServiceImpl<DonMuaHang, Integer> {
     @Setter
     @Builder
     @FieldDefaults(level = AccessLevel.PRIVATE)
-    private class ChiTietDonMuaHangMail {
+    private static class ChiTietDonMuaHangMail {
         Integer stt;
         String tenBienThe;
         BigDecimal soLuong;
