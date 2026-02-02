@@ -9,8 +9,10 @@ import com.dev.backend.dto.request.DonMuaHangCreating;
 import com.dev.backend.dto.response.ResponseData;
 import com.dev.backend.dto.response.entities.DonMuaHangDto;
 import com.dev.backend.entities.DonMuaHang;
+import com.dev.backend.entities.PhieuXuatKho;
 import com.dev.backend.exception.customize.CommonException;
 import com.dev.backend.services.impl.entities.DonMuaHangService;
+import com.dev.backend.services.impl.entities.PhieuXuatKhoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +25,11 @@ public class NghiepVuSanPhamController {
     @Autowired
     private DonMuaHangService donMuaHangService;
 
+    @Autowired
+    private PhieuXuatKhoService phieuXuatKhoService;
 
-    @PostMapping("/create")
+// Tài
+    @PostMapping("/don-mua-hang/create")
     @RequireAuth(
             roles = {
                     IRoleType.quan_tri_vien,
@@ -43,7 +48,7 @@ public class NghiepVuSanPhamController {
     }
 
 
-    @PutMapping("/duyet-don/{trangThai}")
+    @PutMapping("/don-mua-hang/duyet-don/{trangThai}")
     @RequireAuth(
             roles = {
                     IRoleType.quan_tri_vien
