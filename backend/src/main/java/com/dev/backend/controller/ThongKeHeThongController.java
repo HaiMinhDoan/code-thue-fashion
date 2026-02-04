@@ -1,5 +1,6 @@
 package com.dev.backend.controller;
 
+import com.dev.backend.config.SecurityContextHolder;
 import com.dev.backend.constant.variables.IPermissionType;
 import com.dev.backend.constant.variables.IRoleType;
 import com.dev.backend.customizeanotation.RequireAuth;
@@ -35,9 +36,8 @@ public class ThongKeHeThongController {
             rolesLogic = RequireAuth.LogicType.OR
     )
     public ResponseEntity<ResponseData<List<TonKhoChiTietDTO>>> tonKho(
-            @RequestHeader("kho_id") Integer khoId
     ) {
-        return thongKeHeThongService.findTonKhoChiTietByKho(khoId);
+        return thongKeHeThongService.findTonKhoChiTietByKho(SecurityContextHolder.getKhoId());
     }
 
 }

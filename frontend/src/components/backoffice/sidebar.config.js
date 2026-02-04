@@ -96,7 +96,7 @@ export const SIDEBAR_MENU = [
     roles: ["quan_tri_vien", "quan_ly_kho", "nhan_vien_kho"],
     children: [
       { label: "Kho", to: "/warehouse" },
-      { label: "Phiếu xuất kho", to: "/goods-issues" },
+      { label: "Phiếu xuất kho", to: "/warehouse/1/phieu-xuat-kho-noi-bo" },
       { label: "Danh sách lấy hàng", to: "/pick-lists" },
       { label: "Chuyển kho nội bộ", to: "/stock-transfers" },
       { label: "Kiểm kê", to: "/stock-takes" },
@@ -116,7 +116,7 @@ export const SIDEBAR_MENU = [
     children: [
       {
         label: "Khách hàng",
-        to: "/customers",
+        to: "/khach-hang",
         roles: ["quan_tri_vien", "nhan_vien_ban_hang"],
       },
       {

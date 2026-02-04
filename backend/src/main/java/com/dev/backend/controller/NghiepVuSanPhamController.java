@@ -16,6 +16,7 @@ import com.dev.backend.services.impl.entities.PhieuXuatKhoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,7 +44,7 @@ public class NghiepVuSanPhamController {
             rolesLogic = RequireAuth.LogicType.OR,
             permissionsLogic = RequireAuth.LogicType.AND
     )
-    public ResponseEntity<ResponseData<DonMuaHangDto>> create(DonMuaHangCreating creating) {
+    public ResponseEntity<ResponseData<DonMuaHangDto>> create(@RequestBody DonMuaHangCreating creating) {
         return donMuaHangService.create(creating);
     }
 

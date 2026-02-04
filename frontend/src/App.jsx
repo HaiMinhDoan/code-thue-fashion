@@ -22,16 +22,13 @@ import ResetUserPasswordByAdmin from "@/pages/admin/ResetUserPasswordByAdmin.jsx
 import EditUserRoleByAdmin from "@/pages/admin/EditUserRoleByAdmin.jsx";
 import DashboardByAdmin from "@/pages/admin/DashboardByAdmin.jsx";
 import ColorSizeManagement from "@/pages/admin/ColorSizeManagement.jsx";
+import PhieuXuatKhoPage from "./pages/xuat-kho-noi-bo/PhieuXuatKhoPage";
+import KhachHangPage from "./pages/khach-hang/KhachHangPage";
 export default function App() {
   return (
     <BrowserRouter>
       {/* Toaster – tạm thời đặt ở App */}
-      <Toaster
-        position="top-center"
-        richColors
-        closeButton
-        duration={3500}
-      />
+      <Toaster position="top-center" richColors closeButton duration={3500} />
 
       <Routes>
         {/* ========== PUBLIC ROUTES ========== */}
@@ -79,6 +76,14 @@ export default function App() {
           <Route path="/supplier/new" element={<SupplierDetail />} />
           <Route path="/supplier/view/:id" element={<SupplierDetailView />} />
           <Route path="/supplier/:id" element={<SupplierDetail />} />
+
+          {/* Kho và xuất kho */}
+          <Route
+            path="/warehouse/:kho_id/phieu-xuat-kho-noi-bo"
+            element={<PhieuXuatKhoPage />}
+          />
+          {/* Khách hàng */}
+          <Route path="/khach-hang" element={<KhachHangPage />} />
         </Route>
 
         {/* ========== 404 ========== */}
