@@ -1,6 +1,7 @@
 package com.dev.backend.workers;
 
 import com.dev.backend.constant.GlobalCache;
+import com.dev.backend.constant.enums.OtpType;
 import com.dev.backend.dto.OtpScheduleObj;
 import com.dev.backend.entities.NguoiDung;
 import com.dev.backend.services.impl.entities.NguoiDungService;
@@ -24,17 +25,25 @@ public class SchedulingJob {
 
     @Transactional
     @Scheduled(fixedDelay = 60000)
-    public void cleanOutOfDateOtp(){
+    public void cleanOutOfDateOtp() {
         Instant now = Instant.now();
-        for(OtpScheduleObj otpScheduleObj : GlobalCache.OTP_SCHEDULE_OBJS) {
-            if(now.isAfter(otpScheduleObj.getCreatedAt().plusSeconds(300))){
-                Optional<NguoiDung> findingNguoiDung = nguoiDungService.findByEmail(otpScheduleObj.getEmail());
-                if(findingNguoiDung.isPresent()){
-                    if(findingNguoiDung.get().getTrangThai().equals(0)){
-                        nguoiDungService.delete(findingNguoiDung.get().getId());
+        for (OtpScheduleObj otpScheduleObj : GlobalCache.OTP_SCHEDULE_OBJS) {
+            OtpType otpType = otpScheduleObj.getType();
+            if
+            (
+                    otpType.equals(OtpType.ACCOUNT_ACTIVATION)
+                            || otpType.equals(OtpType.RESET_PASSWORD)
+                            || otpType.equals(OtpType.VERIFY_ACCOUNT)
+            ) {
+                if (now.isAfter(otpScheduleObj.getCreatedAt().plusSeconds(300))) {
+                    Optional<NguoiDung> findingNguoiDung = nguoiDungService.findByEmail(otpScheduleObj.getEmail());
+                    if (findingNguoiDung.isPresent()) {
+                        if (findingNguoiDung.get().getTrangThai().equals(0)) {
+                            nguoiDungService.delete(findingNguoiDung.get().getId());
+                        }
                     }
+                    GlobalCache.OTP_SCHEDULE_OBJS.remove(otpScheduleObj);
                 }
-                GlobalCache.OTP_SCHEDULE_OBJS.remove(otpScheduleObj);
             }
         }
     }
