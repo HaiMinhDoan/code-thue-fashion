@@ -1,25 +1,16 @@
-package com.dev.backend.dto.response.entities;
+package com.dev.backend.dto.request;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
 import java.time.Instant;
-
-/**
- * DTO for {@link com.dev.backend.entities.KhachHang}
- */
 @AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-@EqualsAndHashCode(of = {"id"})
-public class KhachHangDto implements Serializable {
-    Integer id;
+public class KhachHangCreating {
     String maKhachHang;
     String tenKhachHang;
     String nguoiLienHe;
@@ -27,5 +18,4 @@ public class KhachHangDto implements Serializable {
     String email;
     String diaChi;
     String loaiKhachHang;
-    Integer trangThai;
 }
