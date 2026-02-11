@@ -71,6 +71,17 @@ class DanhMucQuanAoController {
         );
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<ResponseData<List<DanhMucQuanAoDto>>> getAll() {
+        return ResponseEntity.ok(
+                ResponseData.<List<DanhMucQuanAoDto>>builder()
+                        .status(HttpStatus.OK.value())
+                        .data(danhMucQuanAoMapper.toDtoList(danhMucQuanAoService.getAll()))
+                        .message("Success")
+                        .build()
+        );
+    }
+
     @PostMapping("/create")
     @RequireAuth(
             roles = {IRoleType.quan_tri_vien}

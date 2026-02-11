@@ -322,7 +322,12 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
 
     return (
         <Dialog open={isOpen} onOpenChange={handleCancel}>
-            <DialogContent className="sm:max-w-[900px] max-h-[90vh] bg-white border border-gray-200 rounded-xl shadow-sm">
+            <DialogContent className="sm:max-w-[900px]
+    max-h-[90vh]
+    bg-white text-gray-900
+    border border-gray-200
+    rounded-xl shadow-sm
+    dark:bg-white dark:text-gray-900">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-semibold text-purple-700">
                         {isEditMode ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm mới"}
@@ -776,7 +781,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                                                 {existingProductImages.map((img, index) => (
                                                     <div key={`existing-${index}`} className="relative">
                                                         <img
-                                                            src={img.urlAnh}
+                                                            src={img?.tepTin?.duongDan}
                                                             alt="Product"
                                                             className="w-full h-20 object-cover rounded"
                                                         />
@@ -842,7 +847,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, productId = n
                                                 {existingVariantImages.map((img, index) => (
                                                     <div key={`existing-${index}`} className="relative">
                                                         <img
-                                                            src={img.urlAnh}
+                                                            src={img?.tepTin?.duongDan}
                                                             alt="Variant"
                                                             className="w-full h-20 object-cover rounded"
                                                         />
