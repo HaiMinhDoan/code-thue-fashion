@@ -45,6 +45,11 @@ public class SchedulingJob {
                     GlobalCache.OTP_SCHEDULE_OBJS.remove(otpScheduleObj);
                 }
             }
+            if(otpType.equals(OtpType.SUPPLIER_MAIL_SIGN_KEY)){
+                if (now.isAfter(otpScheduleObj.getCreatedAt().plusSeconds(300))){
+                    GlobalCache.OTP_SCHEDULE_OBJS.remove(otpScheduleObj);
+                }
+            }
         }
     }
 

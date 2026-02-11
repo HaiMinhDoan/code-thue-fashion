@@ -5,7 +5,10 @@ import com.dev.backend.config.SecurityContextHolder;
 import com.dev.backend.constant.variables.IPermissionType;
 import com.dev.backend.constant.variables.IRoleType;
 import com.dev.backend.customizeanotation.RequireAuth;
+import com.dev.backend.dto.request.DonMuaHangBaoGia;
 import com.dev.backend.dto.request.DonMuaHangCreating;
+import com.dev.backend.dto.request.OtpDonMuaHangConfirming;
+import com.dev.backend.dto.request.OtpDonMuaHangGetting;
 import com.dev.backend.dto.response.ResponseData;
 import com.dev.backend.dto.response.entities.DonMuaHangDto;
 import com.dev.backend.entities.DonMuaHang;
@@ -72,4 +75,21 @@ public class NghiepVuSanPhamController {
                         .build()
         );
     }
+
+
+    @PostMapping("/don-mua-hang/lay-otp")
+    public ResponseEntity<ResponseData<String>> layOtpDonMuaHang(@RequestBody OtpDonMuaHangGetting getting){
+        return donMuaHangService.getOtpForSupplier(getting);
+    }
+
+    @PostMapping("/don-mua-hang/xac-nhan-otp")
+    public ResponseEntity<ResponseData<DonMuaHangDto>> xacNhanOtpDonMuaHang(@RequestBody OtpDonMuaHangConfirming confirming){
+        return donMuaHangService.confirmOtpForSupplier(confirming);
+    }
+
+    @PostMapping("/don-mua-hang/bao-gia")
+    public ResponseEntity<ResponseData<String>> baoGiaDonMuaHang(@RequestBody DonMuaHangBaoGia baoGia){
+        return donMuaHangService.baoGiaDonMuaHang(baoGia);
+    }
+
 }
