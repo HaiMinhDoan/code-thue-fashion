@@ -24,6 +24,7 @@ import DashboardByAdmin from "@/pages/admin/DashboardByAdmin.jsx";
 import ColorSizeManagement from "@/pages/admin/ColorSizeManagement.jsx";
 import PhieuXuatKhoPage from "./pages/xuat-kho-noi-bo/PhieuXuatKhoPage";
 import KhachHangPage from "./pages/khach-hang/KhachHangPage";
+import DanhMucQuanAoTree from "./pages/danh-muc-quan-ao/DanhMucQuanAoTree";
 export default function App() {
   return (
     <BrowserRouter>
@@ -61,6 +62,7 @@ export default function App() {
 
           {/* Product */}
           <Route path="/products" element={<ProductList />} />
+          <Route path="/danh-muc-quan-ao" element={<DanhMucQuanAoTree />} />
 
           {/* Warehouse */}
           <Route path="/warehouse" element={<Warehouse />} />
