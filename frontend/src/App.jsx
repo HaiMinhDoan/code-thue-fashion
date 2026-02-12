@@ -25,6 +25,7 @@ import ColorSizeManagement from "@/pages/admin/ColorSizeManagement.jsx";
 import PhieuXuatKhoPage from "./pages/xuat-kho-noi-bo/PhieuXuatKhoPage";
 import KhachHangPage from "./pages/khach-hang/KhachHangPage";
 import DanhMucQuanAoTree from "./pages/danh-muc-quan-ao/DanhMucQuanAoTree";
+import ProductDetail from "./pages/product/components/product/ProductDetail";
 export default function App() {
   return (
     <BrowserRouter>
@@ -63,6 +64,7 @@ export default function App() {
           {/* Product */}
           <Route path="/products" element={<ProductList />} />
           <Route path="/danh-muc-quan-ao" element={<DanhMucQuanAoTree />} />
+          <Route path="/product-detail/:id" element={<ProductDetail />} />
 
           {/* Warehouse */}
           <Route path="/warehouse" element={<Warehouse />} />
