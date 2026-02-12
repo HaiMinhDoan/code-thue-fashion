@@ -44,6 +44,19 @@ public class KhachHangController {
         );
     }
 
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<ResponseData<KhachHangDto>> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(
+                ResponseData.<KhachHangDto>builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Success")
+                        .data(khachHangMapper.toDto(khachHangService.getOne(id).orElseThrow(
+                                () -> new CommonException("Không tìm thấy khách hàng id: " + id)
+                        )))
+                        .build()
+        );
+    }
+
     @PostMapping("/create")
     public ResponseEntity<ResponseData<String>> create(@RequestBody KhachHangCreating creating) {
         return khachHangService.create(creating);

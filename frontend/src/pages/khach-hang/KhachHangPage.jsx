@@ -561,7 +561,12 @@ export default function KhachHangPage() {
 
             {/* Create Dialog */}
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-                <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-white text-gray-900 border border-gray-200 rounded-xl shadow-sm">
+                <DialogContent className="sm:max-w-[900px]
+    max-h-[90vh]
+    bg-white text-gray-900
+    border border-gray-200
+    rounded-xl shadow-sm
+    dark:bg-white dark:text-gray-900">
                     <DialogHeader className="border-b pb-4">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-purple-100 rounded-lg">
@@ -726,7 +731,7 @@ export default function KhachHangPage() {
 
             {/* Detail Dialog */}
             <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-                <DialogContent className="sm:max-w-[900px] max-h-[90vh] bg-white text-gray-900 border border-gray-200 rounded-xl shadow-sm dark:bg-white dark:text-gray-900">
+                <DialogContent className="w-[95vw] max-w-2xl bg-white rounded-2xl border border-gray-200 shadow-2xl">
                     <DialogHeader className="border-b pb-4">
                         <div className="flex items-center justify-between">
                             <DialogTitle className="flex items-center gap-2 text-xl">
