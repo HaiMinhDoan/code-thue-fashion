@@ -17,7 +17,7 @@ public class BienTheSanPhamUpdating {
     BigDecimal giaVon;
     BigDecimal giaBan;
     Integer trangThai;
-    boolean isImageUpdated;
+    boolean imageUpdated;
 
     public static BienTheSanPham toEntity(BienTheSanPhamUpdating updating) {
         return BienTheSanPham.builder()

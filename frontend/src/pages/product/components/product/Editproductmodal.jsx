@@ -221,13 +221,13 @@ export default function EditProductModal({ isOpen, onClose, onSuccess, productId
                 giaVonMacDinh: Number(data.giaVonMacDinh),
                 giaBanMacDinh: Number(data.giaBanMacDinh),
                 trangThai: Number(data.trangThai),
-                isImageUpdated: productImageUpdated,
+                imageUpdated: productImageUpdated,
                 bienTheSanPhams: data.bienTheSanPhams.map((variant, index) => ({
                     id: variant.id,
                     giaVon: Number(variant.giaVon),
                     giaBan: Number(variant.giaBan),
                     trangThai: Number(variant.trangThai),
-                    isImageUpdated: !!variantImages[index], // Check if this variant has a new image
+                    imageUpdated: !!variantImages[index], // Check if this variant has a new image
                 })),
             };
 
@@ -236,6 +236,21 @@ export default function EditProductModal({ isOpen, onClose, onSuccess, productId
 
             // Append product images if updated
             if (productImageUpdated) {
+                // Fetch ảnh cũ còn giữ lại thành File rồi gộp với ảnh mới
+                const existingImageFiles = await Promise.all(
+                    existingProductImages.map(async (img) => {
+                        const url = img.tepTin?.duongDan || img.urlAnh;
+                        const response = await fetch(url);
+                        const blob = await response.blob();
+                        const fileName = url.split('/').pop() || 'existing_image.jpg';
+                        return new File([blob], fileName, { type: blob.type });
+                    })
+                );
+
+                // Gửi ảnh cũ trước, ảnh mới sau
+                existingImageFiles.forEach((file) => {
+                    formData.append('anhSanPhams', file);
+                });
                 productImages.forEach((file) => {
                     formData.append('anhSanPhams', file);
                 });

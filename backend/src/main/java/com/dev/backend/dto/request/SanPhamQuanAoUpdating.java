@@ -24,6 +24,6 @@ public class SanPhamQuanAoUpdating {
     BigDecimal giaBanMacDinh;
     Integer mucTonToiThieu;
     Integer trangThai;
-    boolean isImageUpdated;
+    boolean imageUpdated;
     List<BienTheSanPhamUpdating> bienTheSanPhams;
 }

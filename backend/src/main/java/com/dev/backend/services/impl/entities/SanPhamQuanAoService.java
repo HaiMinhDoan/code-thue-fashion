@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -283,15 +284,23 @@ public class SanPhamQuanAoService extends BaseServiceImpl<SanPhamQuanAo, Integer
         sanPhamQuanAo = update(updating.getId(), sanPhamQuanAo);
         if (updating.isImageUpdated()) {
 
-            for (AnhQuanAo anhQuanAo : sanPhamQuanAo.getAnhQuanAos()) {
-                tepTinService.hardDeleteNoMessage(anhQuanAo.getTepTin().getId());
-            }
+            // Lưu lại list id tepTin trước
+            List<Integer> tepTinIds = sanPhamQuanAo.getAnhQuanAos()
+                    .stream()
+                    .map(anh -> anh.getTepTin().getId())
+                    .toList();
 
+            // Xóa anh_quan_ao trước
             anhQuanAoService.delete(sanPhamQuanAo.getAnhQuanAos());
+
+            // Sau đó mới xóa tep_tin (cả MinIO lẫn DB)
+            tepTinIds.forEach(id -> tepTinService.hardDeleteNoMessage(id));
             try {
                 Date now = new Date();
                 int i = 0;
                 for (MultipartFile file : anhSanPhams) {
+                    System.out.println("File name: " + file.getOriginalFilename()
+                            + " | Size: " + file.getSize());
                     String objectName = minioService.upload(file, ITable.san_pham_quan_ao + "_" + sanPhamQuanAo.getMaSanPham() + "_" + now.getTime() + "_" + i++);
                     TepTin tepTin = tepTinService.create(
                             TepTin.builder()
@@ -316,6 +325,7 @@ public class SanPhamQuanAoService extends BaseServiceImpl<SanPhamQuanAo, Integer
                                     .build()
                     );
                 }
+                System.out.println("Có tổng cộng " + i + " ảnh");
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -357,8 +367,9 @@ public class SanPhamQuanAoService extends BaseServiceImpl<SanPhamQuanAo, Integer
                         anhBienTheService.update(bienThe.getAnhBienThe().getId(), bienThe.getAnhBienThe());
                         tepTinService.hardDeleteNoMessage(idTepCu);
                     }
+                } else {
+                    imageCount++;
                 }
-                imageCount++;
 
             } catch (Exception e) {
                 log.error("Lỗi tạo tệp tin cho biến thể quần áo: {}", btspUdating.getId(), e);
