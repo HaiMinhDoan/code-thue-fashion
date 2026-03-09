@@ -69,6 +69,53 @@ public interface TonKhoTheoLoRepository extends JpaRepository<TonKhoTheoLo, Inte
             """)
     List<TonKhoChiTietDTO> findTonKhoChiTietByKho(@Param("khoId") Integer khoId);
 
+
+    /**
+     * Lấy danh sách tồn kho chi tiết theo kho
+     * Tổng hợp từ tất cả các lô
+     */
+    @Query("""
+                SELECT new com.dev.backend.dto.response.customize.TonKhoChiTietDTO(
+                    bt.id,
+                    bt.maSku,
+                    sp.tenSanPham,
+                    sp.maSanPham,
+                    dm.tenDanhMuc,
+                    ms.tenMau,
+                    ms.maMauHex,
+                    s.tenSize,
+                    cl.tenChatLieu,
+                    k.id,
+                    k.tenKho,
+                    CAST(
+                                COALESCE(SUM(tk.soLuongTon), CAST(0 AS BIGDECIMAL )) AS BIGDECIMAL
+                                            ),
+                    CAST(
+                                COALESCE(SUM(tk.soLuongDaDat), CAST(0 AS BIGDECIMAL )) AS BIGDECIMAL
+                                ),
+                    bt.giaVon,
+                    bt.giaBan,
+                    MAX(tk.ngayNhapGanNhat),
+                    MAX(tk.ngayXuatGanNhat)
+                )
+                FROM BienTheSanPham bt
+                INNER JOIN bt.sanPham sp
+                INNER JOIN sp.danhMuc dm
+                INNER JOIN bt.mauSac ms
+                INNER JOIN bt.size s
+                INNER JOIN bt.chatLieu cl
+                INNER JOIN LoHang lh ON lh.bienTheSanPham.id = bt.id
+                INNER JOIN TonKhoTheoLo tk ON tk.loHang.id = lh.id
+                INNER JOIN tk.kho k
+                WHERE bt.id = :bienTheId
+                AND bt.trangThai = 1
+                GROUP BY bt.id, bt.maSku, sp.tenSanPham, sp.maSanPham, dm.tenDanhMuc,
+                         ms.tenMau, ms.maMauHex, s.tenSize, cl.tenChatLieu,
+                         k.id, k.tenKho, bt.giaVon, bt.giaBan
+                ORDER BY sp.tenSanPham, ms.tenMau, s.thuTuSapXep
+            """)
+    List<TonKhoChiTietDTO> findTonKhoChiTietByBienThe(@Param("bienTheId") Integer bienTheId);
+
     /**
      * Lấy danh sách tồn kho với filter
      */
@@ -228,4 +275,7 @@ public interface TonKhoTheoLoRepository extends JpaRepository<TonKhoTheoLo, Inte
                 ORDER BY COALESCE(SUM(tk.soLuongTon), 0)
             """)
     List<TonKhoChiTietDTO> findTonKhoThapByKho(@Param("khoId") Integer khoId);
+
+
+
 }

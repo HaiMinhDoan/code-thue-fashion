@@ -9,6 +9,7 @@ import com.dev.backend.dto.request.DonMuaHangBaoGia;
 import com.dev.backend.dto.request.DonMuaHangCreating;
 import com.dev.backend.dto.request.OtpDonMuaHangConfirming;
 import com.dev.backend.dto.request.OtpDonMuaHangGetting;
+import com.dev.backend.dto.response.GiaoDichDto;
 import com.dev.backend.dto.response.ResponseData;
 import com.dev.backend.dto.response.entities.DonMuaHangDto;
 import com.dev.backend.entities.DonMuaHang;
@@ -91,5 +92,17 @@ public class NghiepVuSanPhamController {
     public ResponseEntity<ResponseData<String>> baoGiaDonMuaHang(@RequestBody DonMuaHangBaoGia baoGia){
         return donMuaHangService.baoGiaDonMuaHang(baoGia);
     }
+
+    @GetMapping("/don-mua-hang/thanh-toan/{id}")
+    public ResponseEntity<ResponseData<GiaoDichDto>> layGiaoDich(@PathVariable Integer id){
+        return donMuaHangService.layGiaoDich(id);
+    }
+
+    @GetMapping("/don-mua-hang/kiem-tra-thanh-toan/id")
+    public ResponseEntity<ResponseData<String>> kiemTraThanhToan(@RequestParam Integer id){
+        return donMuaHangService.kiemTraThanhToan(id);
+    }
+
+
 
 }
